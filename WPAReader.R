@@ -21,6 +21,7 @@ list_of_packages <- c("tidyverse",
                       "tidygeocoder",
                       "dplyr",
                       "sf",
+                      "vcd",
                       "htmltools",
                       "data.table"
 )
