@@ -1,3 +1,11 @@
+# Datei basierend auf WPAReader.R --> zuerst einlesen!
+# Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den zu untersuchenden unterschieden
+# allen Geschlechtern. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
+
+
+# WIR SOLLTEN UNS GGF MIT KI GEDANKEN ZU ALTERNATIVER DARSTELLUNG NEBEN BALKENDIAGRAMMEN MACHEN
+
+
 # bbs für übersichtlichkeit eingefügt wenn man doch nur eins betrachten mag
 
 # interpretation Corners um auf einen schlag alle ergebnisse der Zusammenhangsmaße zu haben
