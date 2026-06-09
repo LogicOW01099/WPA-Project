@@ -13,12 +13,16 @@ list_of_packages <- c("tidyverse",
                       "magrittr",
                       "optimx",
                       "numDeriv",
+                      "leaflet",
                       "corrplot",
                       "DescTools",
                       "purrr",
+                      "lubridate",
+                      "tidygeocoder",
                       "dplyr",
-                      "data.table",
-                      "vcd"
+                      "sf",
+                      "htmltools",
+                      "data.table"
 )
 
 # Create a list of all missing packages

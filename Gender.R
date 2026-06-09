@@ -1,6 +1,6 @@
 # Datei basierend auf WPAReader.R --> zuerst einlesen!
-# Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den zu untersuchenden unterschieden
-# allen Geschlechtern. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
+# Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den Zusammenhangsmaßen zwischen
+# HVM mit allen Geschlechtern. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
 
 
 # WIR SOLLTEN UNS GGF MIT KI GEDANKEN ZU ALTERNATIVER DARSTELLUNG NEBEN BALKENDIAGRAMMEN MACHEN
@@ -628,7 +628,7 @@ assocstats(table30b2)
 # !!OZüber500Flach!!
 # gender wird zu gender 3
 
-# bb = c("OZu500FlachH","OZu500FlachP","OZu500FlachW","OZüber500FlachH","OZüber500FlachP","OZüber500FlachW")
+# bb = c("OZu500FlachH","OZu500FlachP","OZu500FlachW","OZu500HuegeligH","OZu500HuegeligP","OZu500HuegeligW")
 # rm(list=bb, bb)
 
 # Schritt 1 Daten bereinigen, vorallem NAs sowie E_WEG_GUELTIG 
