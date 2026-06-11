@@ -103,6 +103,9 @@ gender = gender %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
   relocate(QZG, .after = E_QZG_17)
+
+gender = gender %>%
+  filter(if_all(everything(), ~ is.na(.x) | .x != -7))
 rm(Gender)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
@@ -410,6 +413,10 @@ gender2 = gender2 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
   relocate(QZG, .after = E_QZG_17)
+
+gender2 = gender2 %>%
+  filter(if_all(everything(), ~ is.na(.x) | .x != -7))
+
 rm(Gender2)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
@@ -716,6 +723,10 @@ gender3 = gender3 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
   relocate(QZG, .after = E_QZG_17)
+
+gender3 = gender3 %>%
+  filter(if_all(everything(), ~ is.na(.x) | .x != -7))
+
 rm(Gender3)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
