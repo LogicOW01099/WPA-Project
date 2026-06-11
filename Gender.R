@@ -1,7 +1,10 @@
 # Datei basierend auf WPAReader.R --> zuerst einlesen!
 # Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den Zusammenhangsmaßen zwischen
-# HVM mit allen Geschlechtern. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
+# HVM mit allen Geschlechtern. 
 
+# gender -->  refferiert OberZentrenUnter500Flach
+# gender2 --> refferiert OberZentrenUnter500Huegelig
+# gender3 --> refferiert OberZentrenÜber500Flach
 
 # WIR SOLLTEN UNS GGF MIT KI GEDANKEN ZU ALTERNATIVER DARSTELLUNG NEBEN BALKENDIAGRAMMEN MACHEN
 
@@ -28,7 +31,7 @@ Gender = OZu500FlachW %>% # Alles in einen Datensatz
   full_join(OZu500FlachP, by = "HHNR") %>% 
   filter(E_PERS_GUELTIG =="WAHR") %>% # Personen mit ausschließlich gültigen wegen am Stichtag
   filter(E_WEG_GUELTIG =="WAHR") %>% # Gültiger Weg (Angaben zu Dauer und Länge vorhanden, Länge < 100 km)
-  select(HHNR,E_HVM,E_HVM_5,E_HVM_4, V_GESCHLECHT,E_GESCHLECHT_3,E_QZG_17) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
+  select(HHNR,E_HVM,E_HVM_5,E_HVM_4, V_GESCHLECHT,E_GESCHLECHT_3,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
   filter(E_QZG_17 %in% c(1, 3, 8, 10))
   
 gender = Gender %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
