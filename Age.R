@@ -14,6 +14,11 @@
 
 # oder z.B. plots_WB3[["V_ALTER x VM_4"]] mit den entsprechenden Indizes
 
+# selber Spaß bei correlation !!
+
+
+# zu chisq_tests von links nach rechts: X² (Likelihood Ratio); X² (Pearson); df (Likelihood Ratio); 
+# df (Pearson);p-Wert (Likelihood Ratio);p-Wert (Pearson)
 
 # ohne Index -->  u500Flach
 # 2 -->           u500Huegelig
@@ -490,8 +495,7 @@ age3 = age3 %>%
 rm(Age3)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
-# zu chisq_tests von links nach rechts: X² (Likelihood Ratio); X² (Pearson); df (Likelihood Ratio); 
-# df (Pearson);p-Wert (Likelihood Ratio);p-Wert (Pearson)
+
 
 # === WA/AW
 ageWA3 = age3[age3$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
@@ -558,7 +562,7 @@ for (a in alter_vars) {
 }
 
 
-rm(list = ls()[!grepl("^(plot|tables)", ls(), ignore.case = TRUE)])
+rm(list = ls()[!grepl("^(plot|correlati)", ls(), ignore.case = TRUE)])
 
 
 
