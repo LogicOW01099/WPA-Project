@@ -8,8 +8,12 @@
 #==========
 # HIER BITTE CMD+A // STRG+A DRÜCKEN
 # abrufen über 
-# plots_WA[["Alter_3 x VM_5"]]
-# oder im view() rechts klicken
+# View(plots_WA2)
+#                 dann rechts auf die weiße box mit grünem Pfeil klicken
+#                 in der Konsole Enter drücken
+
+# oder z.B. plots_WB3[["V_ALTER x VM_4"]] mit den entsprechenden Indizes
+
 
 # ohne Index -->  u500Flach
 # 2 -->           u500Huegelig
