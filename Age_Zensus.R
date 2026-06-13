@@ -3,7 +3,7 @@
 # DER ZENSUS ZUR BEREINIGUNG WIRD HIER BERÜCKSICHTIGT
 
 # Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den Zusammenhangsmaßen zwischen
-# HVM mit dem Geschlecht. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
+# HVM mit dem Alter. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
 
 
 # WIR SOLLTEN UNS GGF MIT KI GEDANKEN ZU ALTERNATIVER DARSTELLUNG NEBEN BALKENDIAGRAMMEN MACHEN
@@ -15,7 +15,7 @@
 #                 dann rechts auf die weiße box mit grünem Pfeil klicken
 #                 in der Konsole Enter drücken
 
-# oder z.B. plots_WA3[["Geschlecht_3 x VM_4"]] mit den entsprechenden Indizes
+# oder z.B. plots_WB3[["V_ALTER x VM_4"]] mit den entsprechenden Indizes
 
 # selber Spaß bei correlation !!
 
@@ -45,15 +45,15 @@
 OZu500FlachW = OZu500FlachW %>% 
   filter(E_WEG_GUELTIG =="WAHR")
 
-Gender = OZu500FlachW %>% # Alles in einen Datensatz
+Age = OZu500FlachW %>% # Alles in einen Datensatz
   full_join(OZu500FlachH, by = "HHNR") %>% #fulljoin mit sortieren anhand der "Haushaltsnummer"
   full_join(OZu500FlachP, by = c("HHNR","PNR")) %>% 
   filter(E_PERS_GUELTIG =="WAHR") %>% # Personen mit ausschließlich gültigen wegen am Stichtag
   filter(E_WEG_GUELTIG =="WAHR") %>% # Gültiger Weg (Angaben zu Dauer und Länge vorhanden, Länge < 100 km)
-  select(PNR, HHNR,E_HVM,E_HVM_5,E_HVM_4, V_GESCHLECHT,E_GESCHLECHT_3,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
+  select(HHNR,E_HVM,E_HVM_5,E_HVM_4,V_ALTER, E_ALTER_3, E_ALTER_4, E_ALTER_5, E_ALTER_7,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
   filter(E_QZG_17 %in% c(1, 3, 8, 10))
 
-gender = Gender %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
+age = Age %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
   mutate(VM= case_when(
     E_HVM == 1 ~ "Zu Fuß",
     E_HVM == 2 ~ "Fahrrad (konventionell)",
@@ -82,6 +82,7 @@ gender = Gender %>% # für die übersicht, will das gar nicht weiter kommentiere
     E_HVM == 70 ~ "Anderes Verkehrsmittel",
     E_HVM == -7 ~ "Berechnung nicht möglich",
   )) %>% 
+  filter(E_HVM != -7) %>% 
   mutate(VM_5 = case_when(
     E_HVM_5 == 1 ~ "Zu Fuß",
     E_HVM_5 == 2 ~ "Fahrrad",
@@ -96,82 +97,104 @@ gender = Gender %>% # für die übersicht, will das gar nicht weiter kommentiere
     E_HVM_4 == 3 ~ "MIV",
     E_HVM_4 == 4 ~ "ÖV",
     E_HVM_4 == -10 ~ "Unplausibel",
-  )) %>% mutate(Geschlecht = case_when(
-    V_GESCHLECHT == 1 ~ "Männlich",
-    V_GESCHLECHT == 2 ~ "Weiblich",
-    V_GESCHLECHT == 3 ~ "Divers",
-    V_GESCHLECHT == 4 ~ "keine Angabe im Geburtenregister"
-  )) %>% mutate(Geschlecht_3 = case_when(
-    E_GESCHLECHT_3 == 1 ~ "Männlich",
-    E_GESCHLECHT_3 == 2 ~ "Weiblich",
-    E_GESCHLECHT_3 == 3 ~ "Divers/keine Angabe im Geburtenregister"
   )) %>% 
   mutate(QZG = case_when(
     E_QZG_17 == 1 ~ "Wohnen–Arbeiten (WA)",
     E_QZG_17 == 3 ~ "Wohnen–Bildung (WB)",
     E_QZG_17 == 8 ~ "Arbeiten–Wohnen (AW)",
     E_QZG_17 == 10 ~ "Bildung–Wohnen (BW)"
+  )) %>% 
+  mutate(Alter_3 = case_when(
+    E_ALTER_3 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_3 == 2 ~ "18 bis 64 Jahre",
+    E_ALTER_3 == 3 ~ "65 Jahre und älter"
+  )) %>% 
+  mutate(Alter_4 = case_when(
+    E_ALTER_4 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_4 == 2 ~ "18 bis 35 Jahre",
+    E_ALTER_4 == 3 ~ "36 bis 60 Jahre",
+    E_ALTER_4 == 4 ~ "61 Jahre und älter"
+  )) %>% 
+  mutate(Alter_5 = case_when(
+    E_ALTER_5 == 1 ~ "0 bis 14 Jahre",
+    E_ALTER_5 == 2 ~ "15 bis 24 Jahre",
+    E_ALTER_5 == 3 ~ "25 bis 44 Jahre",
+    E_ALTER_5 == 4 ~ "45 bis 64 Jahre",
+    E_ALTER_5 == 5 ~ "65 Jahre und älter",
+  )) %>% 
+  mutate(Alter_7 = case_when(
+    E_ALTER_7 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_7 == 2 ~ "18 bis 25 Jahre",
+    E_ALTER_7 == 3 ~ "26 bis 35 Jahre",
+    E_ALTER_7 == 4 ~ "36 bis 50 Jahre",
+    E_ALTER_7 == 5 ~ "51 bis 60 Jahre",
+    E_ALTER_7 == 6 ~ "61 bis 70 Jahre",
+    E_ALTER_7 == 7 ~ "71 Jahre und älter",
   ))
 
-gender = gender %>% # aufhübshen ist doch auch wichtig oder etwa nicht
+age = age %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(VM, .after = E_HVM) %>% 
   relocate(VM_5, .after = E_HVM_5) %>% 
   relocate(VM_4, .after = E_HVM_4) %>% 
-  relocate(Geschlecht, .after = V_GESCHLECHT) %>% 
-  relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
-  relocate(QZG, .after = E_QZG_17)
+  relocate(QZG, .after = E_QZG_17) %>% 
+  relocate(Alter_3, .after = E_ALTER_3) %>% 
+  relocate(Alter_4, .after = E_ALTER_4) %>% 
+  relocate(Alter_5, .after = E_ALTER_5) %>% 
+  relocate(Alter_7, .after = E_ALTER_7)
 
-gender = gender %>%
+age = age %>%
   filter(if_all(everything(), ~ is.na(.x) | .x != -7))
-rm(Gender)
+rm(Age)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
 # zu chisq_tests von links nach rechts: X² (Likelihood Ratio); X² (Pearson); df (Likelihood Ratio); 
 # df (Pearson);p-Wert (Likelihood Ratio);p-Wert (Pearson)
 
 # === WA/AW
-genderWA = gender[gender$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
-gender_vars = c("Geschlecht","Geschlecht_3") # Vektor mit allen Variablen Age
+ageWA = age[age$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
+alter_vars = c("V_ALTER", "Alter_3", "Alter_4", "Alter_5", "Alter_7") # Vektor mit allen Variablen Age
 vm_vars = c("VM", "VM_4", "VM_5") # Vektor mit allen Variablen VM
 
-gewicht = genderWA %>% 
+gewicht = ageWA %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WA <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA[[key]] <- xtabs(f, data = genderWA)
+    tables_WA[[key]] <- xtabs(f, data = ageWA)
   }
 }
 correlationWA <- lapply(tables_WA, assocstats)
 
-# === WB/BW 
-genderWB = gender[gender$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB %>% 
+
+# === WB/BW 
+ageWB = age[age$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+
+gewicht = ageWB %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WB <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB[[key]] <- xtabs(f, data = genderWB)
+    tables_WA[[key]] <- xtabs(f, data = ageWB)
   }
 }
-correlationWB <- lapply(tables_WB, assocstats)
+correlationWB <- lapply(tables_WA, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
 plots_WA = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WA[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA, aes(x = .data[[a]], fill = .data[[v]],
-                           weight = .data[["GEWICHT_HH_ZENSUS"]])) + # gewicht rein
+      ggplot(ageWA, aes(x = .data[[a]], fill = .data[[v]],
+                        weight = .data[["GEWICHT_HH_ZENSUS"]])) + # Gewicht rein
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -185,11 +208,11 @@ for (a in gender_vars) {
 
 
 plots_WB = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WB[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB, aes(x = .data[[a]], fill = .data[[v]],
-                           weight = .data[["GEWICHT_HH_ZENSUS"]]))+
+      ggplot(ageWB, aes(x = .data[[a]], fill = .data[[v]],
+                    weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -208,15 +231,15 @@ for (a in gender_vars) {
 OZu500HuegeligW = OZu500HuegeligW %>% 
   filter(E_WEG_GUELTIG =="WAHR")
 
-Gender2 = OZu500HuegeligW %>% # Alles in einen Datensatz
+Age2 = OZu500HuegeligW %>% # Alles in einen Datensatz
   full_join(OZu500HuegeligH, by = "HHNR") %>% #fulljoin mit sortieren anhand der "Haushaltsnummer"
   full_join(OZu500HuegeligP, c("HHNR","PNR")) %>% 
   filter(E_PERS_GUELTIG =="WAHR") %>% # Personen mit ausschließlich gültigen wegen am Stichtag
   filter(E_WEG_GUELTIG =="WAHR") %>% # Gültiger Weg (Angaben zu Dauer und Länge vorhanden, Länge < 100 km)
-  select(PNR, HHNR,E_HVM,E_HVM_5,E_HVM_4, V_GESCHLECHT,E_GESCHLECHT_3,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
+  select(HHNR,E_HVM,E_HVM_5,E_HVM_4,V_ALTER, E_ALTER_3, E_ALTER_4, E_ALTER_5, E_ALTER_7,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
   filter(E_QZG_17 %in% c(1, 3, 8, 10))
 
-gender2 = Gender2 %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
+age2 = Age2 %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
   mutate(VM= case_when(
     E_HVM == 1 ~ "Zu Fuß",
     E_HVM == 2 ~ "Fahrrad (konventionell)",
@@ -245,6 +268,7 @@ gender2 = Gender2 %>% # für die übersicht, will das gar nicht weiter kommentie
     E_HVM == 70 ~ "Anderes Verkehrsmittel",
     E_HVM == -7 ~ "Berechnung nicht möglich",
   )) %>% 
+  filter(E_HVM != -7) %>% 
   mutate(VM_5 = case_when(
     E_HVM_5 == 1 ~ "Zu Fuß",
     E_HVM_5 == 2 ~ "Fahrrad",
@@ -259,84 +283,102 @@ gender2 = Gender2 %>% # für die übersicht, will das gar nicht weiter kommentie
     E_HVM_4 == 3 ~ "MIV",
     E_HVM_4 == 4 ~ "ÖV",
     E_HVM_4 == -10 ~ "Unplausibel",
-  )) %>% mutate(Geschlecht = case_when(
-    V_GESCHLECHT == 1 ~ "Männlich",
-    V_GESCHLECHT == 2 ~ "Weiblich",
-    V_GESCHLECHT == 3 ~ "Divers",
-    V_GESCHLECHT == 4 ~ "keine Angabe im Geburtenregister"
-  )) %>% mutate(Geschlecht_3 = case_when(
-    E_GESCHLECHT_3 == 1 ~ "Männlich",
-    E_GESCHLECHT_3 == 2 ~ "Weiblich",
-    E_GESCHLECHT_3 == 3 ~ "Divers/keine Angabe im Geburtenregister"
   )) %>% 
   mutate(QZG = case_when(
     E_QZG_17 == 1 ~ "Wohnen–Arbeiten (WA)",
     E_QZG_17 == 3 ~ "Wohnen–Bildung (WB)",
     E_QZG_17 == 8 ~ "Arbeiten–Wohnen (AW)",
     E_QZG_17 == 10 ~ "Bildung–Wohnen (BW)"
+  )) %>% 
+  mutate(Alter_3 = case_when(
+    E_ALTER_3 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_3 == 2 ~ "18 bis 64 Jahre",
+    E_ALTER_3 == 3 ~ "65 Jahre und älter"
+  )) %>% 
+  mutate(Alter_4 = case_when(
+    E_ALTER_4 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_4 == 2 ~ "18 bis 35 Jahre",
+    E_ALTER_4 == 3 ~ "36 bis 60 Jahre",
+    E_ALTER_4 == 4 ~ "61 Jahre und älter"
+  )) %>% 
+  mutate(Alter_5 = case_when(
+    E_ALTER_5 == 1 ~ "0 bis 14 Jahre",
+    E_ALTER_5 == 2 ~ "15 bis 24 Jahre",
+    E_ALTER_5 == 3 ~ "25 bis 44 Jahre",
+    E_ALTER_5 == 4 ~ "45 bis 64 Jahre",
+    E_ALTER_5 == 5 ~ "65 Jahre und älter",
+  )) %>% 
+  mutate(Alter_7 = case_when(
+    E_ALTER_7 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_7 == 2 ~ "18 bis 25 Jahre",
+    E_ALTER_7 == 3 ~ "26 bis 35 Jahre",
+    E_ALTER_7 == 4 ~ "36 bis 50 Jahre",
+    E_ALTER_7 == 5 ~ "51 bis 60 Jahre",
+    E_ALTER_7 == 6 ~ "61 bis 70 Jahre",
+    E_ALTER_7 == 7 ~ "71 Jahre und älter",
   ))
 
-
-gender2 = gender2 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
+age2 = age2 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(VM, .after = E_HVM) %>% 
   relocate(VM_5, .after = E_HVM_5) %>% 
   relocate(VM_4, .after = E_HVM_4) %>% 
-  relocate(Geschlecht, .after = V_GESCHLECHT) %>% 
-  relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
-  relocate(QZG, .after = E_QZG_17)
+  relocate(QZG, .after = E_QZG_17) %>% 
+  relocate(Alter_3, .after = E_ALTER_3) %>% 
+  relocate(Alter_4, .after = E_ALTER_4) %>% 
+  relocate(Alter_5, .after = E_ALTER_5) %>% 
+  relocate(Alter_7, .after = E_ALTER_7)
 
-gender2 = gender2 %>%
+age2 = age2 %>%
   filter(if_all(everything(), ~ is.na(.x) | .x != -7))
-rm(Gender2)
-
+rm(Age2)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
 # zu chisq_tests von links nach rechts: X² (Likelihood Ratio); X² (Pearson); df (Likelihood Ratio); 
 # df (Pearson);p-Wert (Likelihood Ratio);p-Wert (Pearson)
 
 # === WA/AW
-genderWA2 = gender2[gender2$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
+ageWA2 = age2[age2$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWA2 %>% 
+gewicht = ageWA2 %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WA2 <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA2[[key]] <- xtabs(f, data = genderWA2)
+    tables_WA2[[key]] <- xtabs(f, data = ageWA2)
   }
 }
-correlationWA2 <- lapply(tables_WA2, assocstats)
+correlationWA2 <- lapply(tables_WA, assocstats)
 
 
 
 # === WB/BW 
-genderWB2 = gender2[gender2$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+ageWB2 = age2[age2$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB2 %>% 
+gewicht = ageWB2 %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WB2 <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB2[[key]] <- xtabs(f, data = genderWB2)
+    tables_WB2[[key]] <- xtabs(f, data = ageWB2)
   }
 }
-correlationWB2 <- lapply(tables_WB2, assocstats)
+correlationWB2 <- lapply(tables_WA, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
 plots_WA2 = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WA2[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA2, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(ageWA2, aes(x = .data[[a]], fill = .data[[v]],
+    weight = .data[["GEWICHT_HH_ZENSUS"]]))+
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -350,11 +392,11 @@ for (a in gender_vars) {
 
 
 plots_WB2 = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WB2[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB2, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(ageWB2, aes(x = .data[[a]], fill = .data[[v]],
+                         weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -371,15 +413,15 @@ for (a in gender_vars) {
 OZüber500FlachW = OZüber500FlachW %>% 
   filter(E_WEG_GUELTIG =="WAHR")
 
-Gender3 = OZüber500FlachW %>% # Alles in einen Datensatz
+Age3 = OZüber500FlachW %>% # Alles in einen Datensatz
   full_join(OZüber500FlachH, by = "HHNR") %>% #fulljoin mit sortieren anhand der "Haushaltsnummer"
   full_join(OZüber500FlachP, c("HHNR","PNR")) %>% 
   filter(E_PERS_GUELTIG =="WAHR") %>% # Personen mit ausschließlich gültigen wegen am Stichtag
   filter(E_WEG_GUELTIG =="WAHR") %>% # Gültiger Weg (Angaben zu Dauer und Länge vorhanden, Länge < 100 km)
-  select(PNR, HHNR,E_HVM,E_HVM_5,E_HVM_4, V_GESCHLECHT,E_GESCHLECHT_3,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
+  select(HHNR,E_HVM,E_HVM_5,E_HVM_4,V_ALTER, E_ALTER_3, E_ALTER_4, E_ALTER_5, E_ALTER_7,E_QZG_17,GEWICHT_HH_ZENSUS) %>%  # relevante Spalten zum Untersuchen des Zusammenhangs zwischen geschlecht und Verkerhsmittlwahl
   filter(E_QZG_17 %in% c(1, 3, 8, 10))
 
-gender3 = Gender3 %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
+age3 =  Age3 %>% # für die übersicht, will das gar nicht weiter kommentieren, ist auch bisschen vorbereiten fürs plotten
   mutate(VM= case_when(
     E_HVM == 1 ~ "Zu Fuß",
     E_HVM == 2 ~ "Fahrrad (konventionell)",
@@ -408,6 +450,7 @@ gender3 = Gender3 %>% # für die übersicht, will das gar nicht weiter kommentie
     E_HVM == 70 ~ "Anderes Verkehrsmittel",
     E_HVM == -7 ~ "Berechnung nicht möglich",
   )) %>% 
+  filter(E_HVM != -7) %>% 
   mutate(VM_5 = case_when(
     E_HVM_5 == 1 ~ "Zu Fuß",
     E_HVM_5 == 2 ~ "Fahrrad",
@@ -422,83 +465,102 @@ gender3 = Gender3 %>% # für die übersicht, will das gar nicht weiter kommentie
     E_HVM_4 == 3 ~ "MIV",
     E_HVM_4 == 4 ~ "ÖV",
     E_HVM_4 == -10 ~ "Unplausibel",
-  )) %>% mutate(Geschlecht = case_when(
-    V_GESCHLECHT == 1 ~ "Männlich",
-    V_GESCHLECHT == 2 ~ "Weiblich",
-    V_GESCHLECHT == 3 ~ "Divers",
-    V_GESCHLECHT == 4 ~ "keine Angabe im Geburtenregister"
-  )) %>% mutate(Geschlecht_3 = case_when(
-    E_GESCHLECHT_3 == 1 ~ "Männlich",
-    E_GESCHLECHT_3 == 2 ~ "Weiblich",
-    E_GESCHLECHT_3 == 3 ~ "Divers/keine Angabe im Geburtenregister"
   )) %>% 
   mutate(QZG = case_when(
     E_QZG_17 == 1 ~ "Wohnen–Arbeiten (WA)",
     E_QZG_17 == 3 ~ "Wohnen–Bildung (WB)",
     E_QZG_17 == 8 ~ "Arbeiten–Wohnen (AW)",
     E_QZG_17 == 10 ~ "Bildung–Wohnen (BW)"
+  )) %>% 
+  mutate(Alter_3 = case_when(
+    E_ALTER_3 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_3 == 2 ~ "18 bis 64 Jahre",
+    E_ALTER_3 == 3 ~ "65 Jahre und älter"
+  )) %>% 
+  mutate(Alter_4 = case_when(
+    E_ALTER_4 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_4 == 2 ~ "18 bis 35 Jahre",
+    E_ALTER_4 == 3 ~ "36 bis 60 Jahre",
+    E_ALTER_4 == 4 ~ "61 Jahre und älter"
+  )) %>% 
+  mutate(Alter_5 = case_when(
+    E_ALTER_5 == 1 ~ "0 bis 14 Jahre",
+    E_ALTER_5 == 2 ~ "15 bis 24 Jahre",
+    E_ALTER_5 == 3 ~ "25 bis 44 Jahre",
+    E_ALTER_5 == 4 ~ "45 bis 64 Jahre",
+    E_ALTER_5 == 5 ~ "65 Jahre und älter",
+  )) %>% 
+  mutate(Alter_7 = case_when(
+    E_ALTER_7 == 1 ~ "0 bis 17 Jahre",
+    E_ALTER_7 == 2 ~ "18 bis 25 Jahre",
+    E_ALTER_7 == 3 ~ "26 bis 35 Jahre",
+    E_ALTER_7 == 4 ~ "36 bis 50 Jahre",
+    E_ALTER_7 == 5 ~ "51 bis 60 Jahre",
+    E_ALTER_7 == 6 ~ "61 bis 70 Jahre",
+    E_ALTER_7 == 7 ~ "71 Jahre und älter",
   ))
 
-
-gender3 = gender3 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
+age3 = age3 %>% # aufhübshen ist doch auch wichtig oder etwa nicht
   relocate(VM, .after = E_HVM) %>% 
   relocate(VM_5, .after = E_HVM_5) %>% 
   relocate(VM_4, .after = E_HVM_4) %>% 
-  relocate(Geschlecht, .after = V_GESCHLECHT) %>% 
-  relocate(Geschlecht_3, .after = E_GESCHLECHT_3) %>% 
   filter(VM_5 != "Berechnung nicht möglich") %>% 
-  relocate(QZG, .after = E_QZG_17)
+  relocate(QZG, .after = E_QZG_17) %>% 
+  relocate(Alter_3, .after = E_ALTER_3) %>% 
+  relocate(Alter_4, .after = E_ALTER_4) %>% 
+  relocate(Alter_5, .after = E_ALTER_5) %>% 
+  relocate(Alter_7, .after = E_ALTER_7)
 
-gender3 = gender3 %>%
+age3 = age3 %>%
   filter(if_all(everything(), ~ is.na(.x) | .x != -7))
-
-rm(Gender3)
+rm(Age3)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
 
 
 # === WA/AW
-genderWA3 = gender3[gender3$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
+ageWA3 = age3[age3$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWA3 %>% 
+gewicht = ageWA3 %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WA3 <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA3[[key]] <- xtabs(f, data = genderWA3)
+    tables_WA3[[key]] <- xtabs(f, data = ageWA3)
   }
 }
-correlationWA3 <- lapply(tables_WA2, assocstats)
+correlationWA3 <- lapply(tables_WA, assocstats)
 
 
 
 # === WB/BW 
-genderWB3 = gender3[gender3$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+ageWB3 = age3[age3$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB3 %>% 
+gewicht = ageWB3 %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WB3 <- list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB3[[key]] <- xtabs(f, data = genderWB3)
+    tables_WB3[[key]] <- xtabs(f, data = ageWB3)
   }
 }
-correlationWB3 <- lapply(tables_WB3, assocstats)
+correlationWB3 <- lapply(tables_WA, assocstats)
+
 
 
 # Schritt 3 Grafiken erzeugen
 plots_WA3 = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WA3[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA3, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(ageWA3, aes(x = .data[[a]], fill = .data[[v]],
+                         weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -513,11 +575,11 @@ for (a in gender_vars) {
 
 
 plots_WB3 = list()
-for (a in gender_vars) {
+for (a in alter_vars) {
   for (v in vm_vars) {
     plots_WB3[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB3, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(ageWB3, aes(x = .data[[a]], fill = .data[[v]],
+                         weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(

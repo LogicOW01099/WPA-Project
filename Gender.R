@@ -1,7 +1,4 @@
 # Datei basierend auf WPAReader.R --> zuerst einlesen!
-
-# DER ZENSUS ZUR BEREINIGUNG WIRD HIER BERÜCKSICHTIGT
-
 # Der Quellcode in dieser Datei beschäftigt sich ausschließlich mit den Zusammenhangsmaßen zwischen
 # HVM mit dem Geschlecht. Ergänzungen bitte direkt in den Aufgaben Tracker auf Notion schreiben.
 
@@ -135,34 +132,28 @@ genderWA = gender[gender$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschli
 gender_vars = c("Geschlecht","Geschlecht_3") # Vektor mit allen Variablen Age
 vm_vars = c("VM", "VM_4", "VM_5") # Vektor mit allen Variablen VM
 
-gewicht = genderWA %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WA <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA[[key]] <- xtabs(f, data = genderWA)
+    tables_WA[[paste(a, v, sep = " x ")]] <- table(genderWA[[a]], genderWA[[v]])
   }
 }
-correlationWA <- lapply(tables_WA, assocstats)
+
+correlationWA = lapply(tables_WA, assocstats)
+
+
 
 # === WB/BW 
 genderWB = gender[gender$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WB <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB[[key]] <- xtabs(f, data = genderWB)
+    tables_WB[[paste(a, v, sep = " x ")]] <- table(genderWB[[a]], genderWB[[v]])
   }
 }
-correlationWB <- lapply(tables_WB, assocstats)
+
+correlationWB = lapply(tables_WB, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
@@ -170,8 +161,7 @@ plots_WA = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WA[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA, aes(x = .data[[a]], fill = .data[[v]],
-                           weight = .data[["GEWICHT_HH_ZENSUS"]])) + # gewicht rein
+      ggplot(genderWA, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -188,8 +178,7 @@ plots_WB = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WB[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB, aes(x = .data[[a]], fill = .data[[v]],
-                           weight = .data[["GEWICHT_HH_ZENSUS"]]))+
+      ggplot(genderWB, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -290,6 +279,9 @@ gender2 = gender2 %>%
   filter(if_all(everything(), ~ is.na(.x) | .x != -7))
 rm(Gender2)
 
+gender2 = gender2 %>%
+  filter(if_all(everything(), ~ is.na(.x) | .x != -7))
+rm(Gender2)
 
 # Schritt 2 Cramers V berechnen über Paket (vcd) pre loaded über WPAReader.R
 # zu chisq_tests von links nach rechts: X² (Likelihood Ratio); X² (Pearson); df (Likelihood Ratio); 
@@ -298,36 +290,28 @@ rm(Gender2)
 # === WA/AW
 genderWA2 = gender2[gender2$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWA2 %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WA2 <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA2[[key]] <- xtabs(f, data = genderWA2)
+    tables_WA2[[paste(a, v, sep = " x ")]] <- table(genderWA2[[a]], genderWA2[[v]])
   }
 }
-correlationWA2 <- lapply(tables_WA2, assocstats)
+
+correlationWA2 = lapply(tables_WA2, assocstats)
 
 
 
 # === WB/BW 
 genderWB2 = gender2[gender2$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB2 %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WB2 <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB2[[key]] <- xtabs(f, data = genderWB2)
+    tables_WB2[[paste(a, v, sep = " x ")]] <- table(genderWB2[[a]], genderWB2[[v]])
   }
 }
-correlationWB2 <- lapply(tables_WB2, assocstats)
+
+correlationWB2 = lapply(tables_WB2, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
@@ -335,8 +319,7 @@ plots_WA2 = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WA2[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA2, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(genderWA2, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -353,8 +336,7 @@ plots_WB2 = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WB2[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB2, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(genderWB2, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -460,36 +442,28 @@ rm(Gender3)
 # === WA/AW
 genderWA3 = gender3[gender3$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWA3 %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WA3 <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WA3[[key]] <- xtabs(f, data = genderWA3)
+    tables_WA3[[paste(a, v, sep = " x ")]] <- table(genderWA3[[a]], genderWA3[[v]])
   }
 }
-correlationWA3 <- lapply(tables_WA2, assocstats)
+
+correlationWA3 = lapply(tables_WA3, assocstats)
 
 
 
 # === WB/BW 
 genderWB3 = gender3[gender3$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB3 %>% 
-  select(GEWICHT_HH_ZENSUS)
-
 tables_WB3 <- list()
 for (a in gender_vars) {
   for (v in vm_vars) {
-    key <- paste(a, v, sep = " x ")
-    f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB3[[key]] <- xtabs(f, data = genderWB3)
+    tables_WB3[[paste(a, v, sep = " x ")]] <- table(genderWB3[[a]], genderWB3[[v]])
   }
 }
-correlationWB3 <- lapply(tables_WB3, assocstats)
+
+correlationWB3 = lapply(tables_WB3, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
@@ -497,8 +471,7 @@ plots_WA3 = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WA3[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWA3, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(genderWA3, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -516,8 +489,7 @@ plots_WB3 = list()
 for (a in gender_vars) {
   for (v in vm_vars) {
     plots_WB3[[paste(a, v, sep = " x ")]] <-
-      ggplot(genderWB3, aes(x = .data[[a]], fill = .data[[v]],
-                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
+      ggplot(genderWB3, aes(x = .data[[a]], fill = .data[[v]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
