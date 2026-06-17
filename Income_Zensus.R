@@ -173,17 +173,17 @@ for (a in income_vars) {
 correlationWA <- lapply(tables_WA, assocstats)
 
 # === WB/BW 
-genderWB = gender[gender$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+incomeWB =income[income$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
-gewicht = genderWB %>% 
+gewicht = incomeWB %>% 
   select(GEWICHT_HH_ZENSUS)
 
 tables_WB <- list()
-for (a in gender_vars) {
+for (a in income_vars) {
   for (v in vm_vars) {
     key <- paste(a, v, sep = " x ")
     f   <- as.formula(paste(gewicht, "~", a, "+", v))
-    tables_WB[[key]] <- xtabs(f, data = genderWB)
+    tables_WB[[key]] <- xtabs(f, data = incomeWB)
   }
 }
 correlationWB <- lapply(tables_WB, assocstats)
@@ -192,7 +192,8 @@ plots_WA = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WA[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWA, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWA, aes(x = .data[[a]], fill = .data[[v]],
+                           weight = .data[["GEWICHT_HH_ZENSUS"]])) + # gewicht rein
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -209,7 +210,8 @@ plots_WB = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WB[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]],
+                           weight = .data[["GEWICHT_HH_ZENSUS"]])) + # gewicht rein+
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -341,28 +343,34 @@ rm(Income2)
 # === WA/AW
 incomeWA2 = income2[income2$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
+gewicht = incomeWA2 %>% 
+  select(GEWICHT_HH_ZENSUS)
+
 tables_WA2 <- list()
 for (a in income_vars) {
   for (v in vm_vars) {
-    tables_WA2[[paste(a, v, sep = " x ")]] <- table(incomeWA2[[a]], incomeWA2[[v]])
+    key <- paste(a, v, sep = " x ")
+    f   <- as.formula(paste(gewicht, "~", a, "+", v))
+    tables_WA2[[key]] <- xtabs(f, data = incomeWA2)
   }
 }
-
-correlationWA2 = lapply(tables_WA2, assocstats)
-
-
+correlationWA2 <- lapply(tables_WA2, assocstats)
 
 # === WB/BW 
-incomeWB2 = income2[income2$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+incomeWB2 =income2[income2$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+
+gewicht = incomeWB2 %>% 
+  select(GEWICHT_HH_ZENSUS)
 
 tables_WB2 <- list()
 for (a in income_vars) {
   for (v in vm_vars) {
-    tables_WB2[[paste(a, v, sep = " x ")]] <- table(incomeWB2[[a]], incomeWB2[[v]])
+    key <- paste(a, v, sep = " x ")
+    f   <- as.formula(paste(gewicht, "~", a, "+", v))
+    tables_WB2[[key]] <- xtabs(f, data = incomeWB2)
   }
 }
-
-correlationWB2 = lapply(tables_WB2, assocstats)
+correlationWB2 <- lapply(tables_WB2, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
@@ -370,7 +378,8 @@ plots_WA2 = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WA2[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWA2, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWA2, aes(x = .data[[a]], fill = .data[[v]],
+                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -387,7 +396,8 @@ plots_WB2 = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WB2[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]],
+                           weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -518,28 +528,35 @@ rm(Income3)
 # === WA/AW
 incomeWA3 = income3[income3$E_QZG_17 %in% c(1, 8), ] # DF subsetten und so ausschließlich WA und AW drin haben
 
+gewicht = incomeWA3 %>% 
+  select(GEWICHT_HH_ZENSUS)
+
 tables_WA3 <- list()
 for (a in income_vars) {
   for (v in vm_vars) {
-    tables_WA3[[paste(a, v, sep = " x ")]] <- table(incomeWA3[[a]], incomeWA3[[v]])
+    key <- paste(a, v, sep = " x ")
+    f   <- as.formula(paste(gewicht, "~", a, "+", v))
+    tables_WA3[[key]] <- xtabs(f, data = incomeWA3)
   }
 }
-
-correlationWA3 = lapply(tables_WA3, assocstats)
-
-
+correlationWA3 <- lapply(tables_WA3, assocstats)
 
 # === WB/BW 
-incomeWB3 = income3[income3$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+incomeWB3 =income3[income3$E_QZG_17 %in% c(3, 10), ] # DF subsetten und so ausschließlich WA und AW drin haben
+
+gewicht = incomeWB3 %>% 
+  select(GEWICHT_HH_ZENSUS)
 
 tables_WB3 <- list()
 for (a in income_vars) {
   for (v in vm_vars) {
-    tables_WB3[[paste(a, v, sep = " x ")]] <- table(incomeWB2[[a]], incomeWB2[[v]])
+    key <- paste(a, v, sep = " x ")
+    f   <- as.formula(paste(gewicht, "~", a, "+", v))
+    tables_WB3[[key]] <- xtabs(f, data = incomeWB3)
   }
 }
+correlationWB3 <- lapply(tables_WB3, assocstats)
 
-correlationWB3 = lapply(tables_WB3, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
@@ -547,7 +564,8 @@ plots_WA3 = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WA3[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWA3, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWA3, aes(x = .data[[a]], fill = .data[[v]],
+                            weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(
@@ -564,7 +582,8 @@ plots_WB3 = list()
 for (a in income_vars) {
   for (v in vm_vars) {
     plots_WB3[[paste(a, v, sep = " x ")]] <-
-      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]])) +
+      ggplot(incomeWB, aes(x = .data[[a]], fill = .data[[v]],
+                           weight = .data[["GEWICHT_HH_ZENSUS"]])) +
       geom_bar(position = "fill") +
       scale_y_continuous(labels = scales::percent) +
       labs(

@@ -571,4 +571,4 @@ for (a in income_vars) {
 
 
 
-rm(list = ls()[!grepl("^(plot|correlati)", ls(), ignore.case = TRUE)])
+#rm(list = ls()[!grepl("^(plot|correlati)", ls(), ignore.case = TRUE)])
