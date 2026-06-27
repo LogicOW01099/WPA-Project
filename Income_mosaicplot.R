@@ -2,7 +2,8 @@
 # IN Income.R die LETZTE Zeile in Kommentar umwandeln dann funktioniert das ohne Probleme 
 # Interpretation mit KI 
   # https://claude.ai/share/5a354c82-8d4b-407e-962e-76225f1c5189
-
+# Empfehlung für Zensus korregierte Daten, weil wir hier alle Städte über einen Kamm scheren
+# WA und WB hier zusammengefasst
 
 # 0Zu500Huegelig
 income$Eink <- factor(
@@ -44,7 +45,7 @@ levels(income$Eink) <- c(
 )
 
 mosaic(
-  ~ Eink + VM_5,
+  ~ Eink_5 + VM_5,
   data     = income,
   shade    = TRUE,
   legend   = TRUE,
@@ -106,7 +107,7 @@ levels(income2$Eink) <- c(
 )
 
 mosaic(
-  ~ Eink + VM_5,
+  ~ Eink_5 + VM_5,
   data     = income2,
   shade    = TRUE,
   legend   = TRUE,
@@ -169,7 +170,7 @@ levels(income3$Eink) <- c(
 )
 
 mosaic(
-  ~ Eink + VM_5,
+  ~ Eink_5 + VM_5, # einkommen in 5er Gruppen
   data     = income3,
   shade    = TRUE,
   legend   = TRUE,
