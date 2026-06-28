@@ -351,7 +351,7 @@ for (a in alter_vars) {
     tables_WA2[[key]] <- xtabs(f, data = ageWA2)
   }
 }
-correlationWA2 <- lapply(tables_WA, assocstats)
+correlationWA2 <- lapply(tables_WA2, assocstats)
 
 
 
@@ -369,7 +369,7 @@ for (a in alter_vars) {
     tables_WB2[[key]] <- xtabs(f, data = ageWB2)
   }
 }
-correlationWB2 <- lapply(tables_WA, assocstats)
+correlationWB2 <- lapply(tables_WB2, assocstats)
 
 
 # Schritt 3 Grafiken erzeugen
